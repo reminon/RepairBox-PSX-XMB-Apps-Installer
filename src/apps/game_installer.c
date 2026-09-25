@@ -7,6 +7,8 @@
 #include <hdd-ioctl.h>
 #include <fileio.h>
 #include <errno.h>
+#include <delaythread.h>
+#include "ui.h"
 
 #define HDL_MAGIC           0xdeadfeed
 #define HDL_FS_MAGIC        0x1337
@@ -295,4 +297,16 @@ int game_install(const char *iso_path, const char *title,
     /* Create PP partition with EXECUTE.KELF */
     r = create_pp_partition(disc_id, elf_source);
     return r;
+}
+
+void run_game_installer(psx_revision_t revision,
+                        const system_version_result_t *version)
+{
+    /* TODO: implement game ISO scan and install UI */
+    (void)revision;
+    (void)version;
+    ui_begin();
+    ui_printf("GAME INSTALLER\\n\\nComing soon.\\n");
+    ui_sync();
+    DelayThread(2000000);
 }

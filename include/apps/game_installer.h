@@ -18,3 +18,6 @@ int write_direct_kelf_verified(const char *source, const char *destination,
                                 u64 total_work,
                                 void *progress, void *progress_context,
                                 char actual_hash[65]);
+#include "apps/system_version.h"
+void run_game_installer(psx_revision_t revision,
+                        const system_version_result_t *version);

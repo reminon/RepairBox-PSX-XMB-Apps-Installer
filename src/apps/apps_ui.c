@@ -11,6 +11,7 @@
 #include <fileXio_rpc.h>
 
 #include "apps/app_installer.h"
+#include "apps/game_installer.h"
 #include "apps/apps_ui.h"
 #include "apps/storage.h"
 #include "apps/system_version.h"
@@ -376,6 +377,48 @@ static void draw_uninstall_result(
     ui_sync();
 }
 
+
+typedef enum {
+    MODE_APPS,
+    MODE_GAMES,
+    MODE_NONE
+} install_mode_t;
+
+static install_mode_t choose_install_mode(psx_revision_t revision,
+                                          const system_version_result_t *version)
+{
+    struct padButtonStatus buttons;
+    unsigned int previous = 0;
+    (void)version;
+
+    for (;;) {
+        int state;
+        unsigned int current, pressed;
+
+        ui_begin();
+        ui_printf(RBX_PROGRAM_TITLE "\n");
+        ui_printf("%s\n\n", revision_title(revision));
+        ui_printf("Select installation type:\n\n");
+        ui_inverse_status("X = Install Applications   [] = Install Games");
+        ui_printf("\n");
+        ui_printf("X       Install homebrew apps to XMB\n");
+        ui_printf("Square  Install game ISOs to XMB\n");
+        ui_printf("O       Exit\n");
+        ui_sync();
+
+        state = padGetState(0, 0);
+        if ((state == PAD_STATE_STABLE || state == PAD_STATE_FINDCTP1) &&
+            padRead(0, 0, &buttons) != 0) {
+            current = 0xffffu ^ buttons.btns;
+            pressed = current & ~previous;
+            previous = current;
+            if (pressed & PAD_CROSS)   return MODE_APPS;
+            if (pressed & PAD_SQUARE)  return MODE_GAMES;
+            if (pressed & PAD_CIRCLE)  return MODE_NONE;
+        }
+        DelayThread(16000);
+    }
+}
 static void run_installer(psx_revision_t revision,
                           const system_version_result_t *version)
 {
@@ -516,7 +559,13 @@ void apps_ui_run(void)
         version_result = system_version_detect(&version);
     }
     if (version_result >= 0 && version.revision != PSX_REVISION_NONE) {
-        run_installer(version.revision, &version);
+        {
+            install_mode_t mode = choose_install_mode(version.revision, &version);
+            if (mode == MODE_APPS)
+                run_installer(version.revision, &version);
+            else if (mode == MODE_GAMES)
+                run_game_installer(version.revision, &version);
+        }
     } else {
         draw_detection_failed(&version, version_result, storage_result);
         for (;;) {
