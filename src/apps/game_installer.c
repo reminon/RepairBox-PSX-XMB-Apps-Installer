@@ -9,6 +9,9 @@
 #include <errno.h>
 #include <delaythread.h>
 #include "ui.h"
+#include "source_media.h"
+#include "apps/system_version.h"
+#include "apps/storage.h"
 
 #define HDL_MAGIC           0xdeadfeed
 #define HDL_FS_MAGIC        0x1337

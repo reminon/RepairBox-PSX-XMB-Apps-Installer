@@ -6,7 +6,8 @@
 typedef enum source_media_content {
     SOURCE_MEDIA_PSX1_SYSTEM = 0,
     SOURCE_MEDIA_PSX2_SYSTEM,
-    SOURCE_MEDIA_APPS
+    SOURCE_MEDIA_APPS,
+    SOURCE_MEDIA_GAMES
 } source_media_content_t;
 
 void source_media_detect_preferred(int argc, char **argv);
@@ -37,3 +38,5 @@ int source_media_dread_is_eof(int result);
 size_t source_media_read_size(size_t requested);
 
 #endif
+const char *source_media_games_dvd_root(void);
+const char *source_media_games_cd_root(void);

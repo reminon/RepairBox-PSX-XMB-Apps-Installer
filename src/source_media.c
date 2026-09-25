@@ -89,6 +89,8 @@ static char psx1_xfrom_root[PATH_BUFFER_SIZE] =
 static char psx2_xfrom_root[PATH_BUFFER_SIZE] =
     "invalid:/RepairBox-PSX2-XFROM";
 static char apps_root[PATH_BUFFER_SIZE] = "invalid:/PSX_XMB_Apps";
+static char games_dvd_root[PATH_BUFFER_SIZE] = "invalid:/DVD";
+static char games_cd_root[PATH_BUFFER_SIZE] = "invalid:/CD";
 
 static void set_active_source(unsigned int index);
 
@@ -246,6 +248,11 @@ static int base_has_content(unsigned int source,
         build_path(first, sizeof(first), device, base, "PSX_XMB_Apps");
         return directory_readable(first);
     }
+    if (content == SOURCE_MEDIA_GAMES) {
+        build_path(first, sizeof(first), device, base, "DVD");
+        build_path(second, sizeof(second), device, base, "CD");
+        return directory_readable(first) || directory_readable(second);
+    }
     build_path(first, sizeof(first), device, base,
                "RepairBox-PSX2-SystemFiles");
     build_path(second, sizeof(second), device, base,
@@ -279,6 +286,8 @@ static void apply_package_base(unsigned int source, const char *base)
                "RepairBox-PSX2-XFROM");
     build_path(apps_root, sizeof(apps_root), device, package_base,
                "PSX_XMB_Apps");
+    build_path(games_dvd_root, sizeof(games_dvd_root), device, package_base, "DVD");
+    build_path(games_cd_root, sizeof(games_cd_root), device, package_base, "CD");
 }
 
 static int try_launch_ancestors(unsigned int source,
@@ -792,3 +801,6 @@ size_t source_media_read_size(size_t requested)
     return source_media_is_mmce() && requested > MMCE_READ_SIZE
                ? MMCE_READ_SIZE : requested;
 }
+
+const char *source_media_games_dvd_root(void) { return games_dvd_root; }
+const char *source_media_games_cd_root(void) { return games_cd_root; }
