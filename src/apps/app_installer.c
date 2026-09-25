@@ -1156,7 +1156,7 @@ static int read_exact(int fd, void *data, size_t size)
     return 0;
 }
 
-static int write_direct_kelf_verified(const char *source,
+int write_direct_kelf_verified(const char *source,
                                       const char *destination,
                                       u64 source_size,
                                       const char *expected_hash,

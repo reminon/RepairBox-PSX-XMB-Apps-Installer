@@ -15,7 +15,7 @@ RELEASE_ELF = RepairBox.pl-PSX-XMB-Dynamic-App-Installer-v1.1-$(FLAVOR).elf
 
 CORE = src/main src/ui src/sha256 src/source_media src/iop_module_lookup \
 	src/apps/apps_ui src/apps/storage src/apps/system_version \
-	src/apps/app_installer
+	src/apps/app_installer src/apps/game_installer
 COMMON_IRX = iomanX fileXio sio2man padman ps2dev9 ps2atad ps2fs
 IRX = $(COMMON_IRX) $(SOURCE_IRX)
 EE_OBJS = $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(CORE))) \
